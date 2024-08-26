@@ -1,7 +1,7 @@
 # BACKEND
 ## Admin Routes
 
-API route: Handles client requests for admin loggin 
+API Route 1: Handles client requests for admin loggin 
 ## Usage
 ``` base
 Request
