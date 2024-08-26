@@ -2,7 +2,7 @@
 **Below API routes are available for clients to make requests to the backend and access the corresponding services.**
 ## Admin Routes
 
-API Route 1: Handles client requests for admin loggin 
+**API Route 1: Handles client requests for admin loggin**
 ### Usage
 ``` base
 Request
