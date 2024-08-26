@@ -3,7 +3,7 @@
 ## Admin Routes
 
 API Route 1: Handles client requests for admin loggin 
-## Usage
+### Usage
 ``` base
 Request
 URL: /api/v1/admin/login
