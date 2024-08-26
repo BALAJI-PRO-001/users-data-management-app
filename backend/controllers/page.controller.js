@@ -1,10 +1,16 @@
 const path = require("path");
 const fs = require("fs");
+const { 
+  HEADER_COMPONENT_FILE_PATH,
+  INDEX_PAGE_FILE_PATH,
+  HOME_PAGE_FILE_PATH,
+  ADD_USER_PAGE_FILE_PATH
+} = require("../utils/constants");
 
-const headerHTML = fs.readFileSync(path.join(__dirname, "../../client/views/components/header.component.html"), "utf8");
-const indexHTML = fs.readFileSync(path.join(__dirname, "../../client/views/index.html"), "utf8");
-const homeHTML = fs.readFileSync(path.join(__dirname, "../../client/views/pages/home.html"), "utf-8");
-const addUserHTML = fs.readFileSync(path.join(__dirname, "../../client/views/pages/add-user.html"), "utf-8");
+const headerHTML = fs.readFileSync(HEADER_COMPONENT_FILE_PATH, "utf8");
+const indexHTML = fs.readFileSync(INDEX_PAGE_FILE_PATH, "utf8");
+const homeHTML = fs.readFileSync(HOME_PAGE_FILE_PATH, "utf-8");
+const addUserHTML = fs.readFileSync(ADD_USER_PAGE_FILE_PATH, "utf-8");
 
 function indexPage(req, res) {
   return res.end(indexHTML);
