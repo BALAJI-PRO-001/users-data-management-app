@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { login } = require("../controllers/admin.controller");
+const verifyAdminAuthenticationToken = require("../utils/verifyAdminAuthenticationToken");
+const { login, downloadUsersRecords } = require("../controllers/admin.controller");
 
-router.post("/login", login);
+router.post("/login", login)
+      .get("/users-records/download", verifyAdminAuthenticationToken, downloadUsersRecords);
 
 module.exports = router;
