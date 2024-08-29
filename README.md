@@ -22,3 +22,14 @@ Response: (Request Based)
 }
 ```
 
+**API Route 2: Download users records from server**
+### Usage
+``` base
+Request
+URL: /api/v1/admin/users-records/download
+METHOD: GET
+COOKIE: TRUE 
+
+Response: (Request Based)
+File: usersRecords.json
+```
