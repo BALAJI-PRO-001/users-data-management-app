@@ -1,6 +1,7 @@
 const errorHandler = require("../utils/errorHandler");
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
+const path = require("path");
 require("dotenv").config();
 
 
@@ -22,7 +23,15 @@ async function login(req, res, next) {
 }
 
 
+async function downloadUsersRecords(req, res, next) {
+  try {
+    res.download(path.join(__dirname, "../data/usersRecords.json"));
+  } catch(err) {
+    next(err);
+  }
+}
 
 module.exports = {
-  login
+  login,
+  downloadUsersRecords
 };
