@@ -28,8 +28,93 @@ Response: (Request Based)
 Request
 URL: /api/v1/admin/users-records/download
 METHOD: GET
-COOKIE: TRUE 
+COOKIE: Admin cookie must 
 
 Response: (Request Based)
 File: usersRecords.json
+```
+
+**API Routes For CRUD: CRUD operation
+### Usage
+``` base
+Request: Create new user
+URL: /api/v1/admin/users
+METHOD: POST
+COOKIE: Admin cookie must 
+CONTENT-TYPE: application/json
+DATA: {
+  name: <string>,
+  phone_no: <number>,      => (max: 10 digit)
+  address: <string>,       => (max: 150 char)
+  cow_name: <string>,      => (max: 80 char)
+  breed: <string>,         => (max: 80 char)
+  bull_name: <string>      => (max: 80 char)
+  ai_date: <date>,
+  injection_cost: <string> => (max: 50 char)         
+}
+
+Response: (Request Based)
+{
+  success: true,
+  statusCode: 201,
+  message: "New user created"
+}
+```
+
+### Usage
+``` base
+Request: Get all users records
+URL: /api/v1/admin/users/all
+METHOD: GET
+COOKIE: Admin cookie must 
+
+Response: (Request Based)
+[
+  {}, {}, {}, {}
+]
+```
+
+### Usage
+``` base
+Request: Get single user records
+URL: /api/v1/admin/users/<userID>
+METHOD: GET
+COOKIE: Admin cookie must 
+
+Response: (Request Based)
+{
+  // user records based by id
+  ....
+}
+```
+
+### Usage
+``` base
+Request: Update single user records
+URL: /api/v1/admin/users/<userID>
+METHOD: PATCH
+COOKIE: Admin cookie must 
+CONTENT-TYPE: application/json
+DATA: {
+  <key>: <value>
+  ....
+}
+
+Response: (Request Based)
+{
+  // updated user records
+  ....
+}
+```
+
+### Usage
+``` base
+Request: Delete single user records
+URL: /api/v1/admin/users/<userID>
+METHOD: DELETE
+COOKIE: Admin cookie must 
+CONTENT-TYPE: application/json
+
+Response: (Request Based)
+status: 204 body: empty
 ```
