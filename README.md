@@ -34,7 +34,7 @@ Response: (Request Based)
 File: usersRecords.json
 ```
 
-**API Routes For CRUD: CRUD operation
+**API Routes For CRUD: CRUD operation**
 ### Usage
 ``` base
 Request: Create new user
