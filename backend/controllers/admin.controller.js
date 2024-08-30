@@ -32,6 +32,24 @@ async function createNewUser(req, res, next) {
 }
 
 
+async function getUsers(req, res, next) {
+  try {
+
+  } catch(err) {
+    next(err);
+  }
+}
+
+
+async function getUser(req, res, next) {
+  try {
+
+  } catch(err) {
+    next(err);
+  }
+}
+
+
 async function updateUser(req, res, next) {
   try {
     
@@ -62,6 +80,7 @@ async function downloadUsersRecords(req, res, next) {
 module.exports = {
   login,
   createNewUser,
+  getUsers, getUser,
   updateUser,
   deleteUser,
   downloadUsersRecords
