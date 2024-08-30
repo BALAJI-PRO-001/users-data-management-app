@@ -23,6 +23,33 @@ async function login(req, res, next) {
 }
 
 
+async function createNewUser(req, res, next) {
+  try {
+
+  } catch(err) {
+    next(err);
+  }
+}
+
+
+async function updateUser(req, res, next) {
+  try {
+    
+  } catch(err) {
+    next(err);
+  }
+}
+
+
+async function deleteUser(req, res, next) {
+  try {
+
+  } catch(err) {
+    next(err);
+  }
+}
+
+
 async function downloadUsersRecords(req, res, next) {
   try {
     res.download(path.join(__dirname, "../data/usersRecords.json"));
@@ -31,7 +58,11 @@ async function downloadUsersRecords(req, res, next) {
   }
 }
 
+
 module.exports = {
   login,
+  createNewUser,
+  updateUser,
+  deleteUser,
   downloadUsersRecords
 };
