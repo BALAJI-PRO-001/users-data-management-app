@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 require("dotenv").config();
 const { USERS_RECORDS_CSV_FILE_PATH } = require("../utils/constants");
+const convertKeyNameUnderScoreToCamelCase = require("../utils/convertKeyNameUnderscoreToCamelCase");
+
 
 
 async function login(req, res, next) {
@@ -34,6 +36,7 @@ async function createNewUser(req, res, next) {
     await User.addNewUser(name, phoneNo, address, cowName, breed, bullName, aiDate, injectionCost);
     res.status(201).json({
       success: true,
+      statusCode: 201,
       message: "New user created successfully"
     });
   } catch(err) {
@@ -47,22 +50,13 @@ async function createNewUser(req, res, next) {
 
 async function getUsers(req, res, next) {
   try {
-    const users = await User.getUsers();
-    const modifiedUsers = [];
-    for (let user of users) {
-      modifiedUsers.push({
-        id: user.id,
-        name: user.name,
-        phoneNo: users.phone_no,
-        address: user.address,
-        cowName: user.cow_name,
-        breed: user.breed
-      });
-    }
+    let users = await User.getUsers();
+    users = users.map((user) => (convertKeyNameUnderScoreToCamelCase(user)));
     res.status(200).json({
       success: true,
+      statusCode: 200,
       data: {
-        users: modifiedUsers
+        users: users
       }
     });
   } catch(err) {
@@ -73,7 +67,19 @@ async function getUsers(req, res, next) {
 
 async function getUser(req, res, next) {
   try {
-
+    const userID = req.params.id;
+    let user = await User.getUser(userID);
+    if (!user) {
+      return next(errorHandler(404, "User not found"));
+    }
+    user = convertKeyNameUnderScoreToCamelCase(user);
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      data: {
+        user: user
+      }
+    });
   } catch(err) {
     next(err);
   }
@@ -82,7 +88,20 @@ async function getUser(req, res, next) {
 
 async function updateUser(req, res, next) {
   try {
-    
+    const userID = req.params.id;
+    const userToUpdate = await User.getUser(userID);
+    if (!userToUpdate) {
+      return next(errorHandler(404, "User not found"));
+    }
+    let updatedUser = await User.updateUser(userID, req.body);
+    updatedUser = convertKeyNameUnderScoreToCamelCase(updatedUser);
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      data: {
+        user: updateUser
+      }
+    });
   } catch(err) {
     next(err);
   }
