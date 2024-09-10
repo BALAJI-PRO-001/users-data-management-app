@@ -1,4 +1,5 @@
 const errorHandler = require("../utils/errorHandler");
+const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 require("dotenv").config();
@@ -29,8 +30,16 @@ async function login(req, res, next) {
 
 async function createNewUser(req, res, next) {
   try {
-
+    const {name, phoneNo, address, cowName, breed, bullName, aiDate, injectionCost} = req.body;
+    await User.addNewUser(name, phoneNo, address, cowName, breed, bullName, aiDate, injectionCost);
+    res.status(201).json({
+      success: true,
+      message: "New user created successfully"
+    });
   } catch(err) {
+    if (err.message.includes("SQLITE_CONSTRAINT: UNIQUE constraint failed: users.phone_no")) {
+      return next(errorHandler(409, "Duplicate Key (Phone Number)"));
+    }
     next(err);
   }
 }
@@ -38,7 +47,24 @@ async function createNewUser(req, res, next) {
 
 async function getUsers(req, res, next) {
   try {
-
+    const users = await User.getUsers();
+    const modifiedUsers = [];
+    for (let user of users) {
+      modifiedUsers.push({
+        id: user.id,
+        name: user.name,
+        phoneNo: users.phone_no,
+        address: user.address,
+        cowName: user.cow_name,
+        breed: user.breed
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: {
+        users: modifiedUsers
+      }
+    });
   } catch(err) {
     next(err);
   }
