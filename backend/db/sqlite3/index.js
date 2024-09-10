@@ -21,4 +21,4 @@ db.run(queries.CREATE_USERS_TABLE_SQL, (err) => {
   }
 });
 
-module.exports = { db };
+module.exports = { db }; 
