@@ -31,6 +31,19 @@ async function login(req, res, next) {
 }
 
 
+async function logOut(req, res, next) {
+  try {
+    res.status(200).clearCookie("admin_access_token").json({
+      success: true,
+      statusCode: 200,
+      message: "Admin has been logged out successfully"
+    });
+  } catch(err) {
+    next(err);
+  }
+}
+
+
 async function createNewUser(req, res, next) {
   try {
     const {name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost} = req.body;
@@ -136,6 +149,16 @@ async function deleteUser(req, res, next) {
 }
 
 
+async function deleteAllUsers(req, res, next) {
+  try {
+    await User.deleteAllUsers();
+    res.status(204).json({});
+  } catch(err) {
+    next(err);
+  }
+}
+
+
 async function downloadUsersRecords(req, res, next) {
   try {
     res.download(USERS_RECORDS_CSV_FILE_PATH);
@@ -146,10 +169,11 @@ async function downloadUsersRecords(req, res, next) {
 
 
 module.exports = {
-  login,
+  login, logOut,
   createNewUser,
   getUsers, getUser,
   updateUser,
   deleteUser,
-  downloadUsersRecords
+  downloadUsersRecords,
+  deleteAllUsers
 };
