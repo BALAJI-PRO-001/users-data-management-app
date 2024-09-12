@@ -5,6 +5,7 @@ const bcryptjs = require("bcryptjs");
 require("dotenv").config();
 const { USERS_RECORDS_CSV_FILE_PATH } = require("../utils/constants");
 const convertKeyNameUnderScoreToCamelCase = require("../utils/convertKeyNameUnderscoreToCamelCase");
+const convertKeyNameCamelCaseToUnderscore = require("../utils/convertKeyNameCamelCaseToUnderscore");
 
 
 
@@ -32,15 +33,15 @@ async function login(req, res, next) {
 
 async function createNewUser(req, res, next) {
   try {
-    const {name, phoneNo, address, cowName, breed, bullName, aiDate, injectionCost} = req.body;
-    await User.addNewUser(name, phoneNo, address, cowName, breed, bullName, aiDate, injectionCost);
+    const {name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost} = req.body;
+    await User.addNewUser(name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost);
     res.status(201).json({
       success: true,
       statusCode: 201,
       message: "New user created successfully"
     });
   } catch(err) {
-    if (err.message.includes("SQLITE_CONSTRAINT: UNIQUE constraint failed: users.phone_no")) {
+    if (err.message.includes("SQLITE_CONSTRAINT: UNIQUE constraint failed: users.phone_number")) {
       return next(errorHandler(409, "Duplicate Key (Phone Number)"));
     }
     next(err);
@@ -55,6 +56,7 @@ async function getUsers(req, res, next) {
     res.status(200).json({
       success: true,
       statusCode: 200,
+      count: users.length,
       data: {
         users: users
       }
@@ -93,16 +95,25 @@ async function updateUser(req, res, next) {
     if (!userToUpdate) {
       return next(errorHandler(404, "User not found"));
     }
-    let updatedUser = await User.updateUser(userID, req.body);
+
+    if (req.body.id) {
+      return next(errorHandler(400, "Cannot updated id"));
+    }
+
+    
+    let updatedUser = await User.updateUser(userID, convertKeyNameCamelCaseToUnderscore(req.body));
     updatedUser = convertKeyNameUnderScoreToCamelCase(updatedUser);
     res.status(200).json({
       success: true,
       statusCode: 200,
       data: {
-        user: updateUser
+        user: updatedUser
       }
     });
   } catch(err) {
+    if (err.message.includes("SQLITE_CONSTRAINT: UNIQUE constraint failed: users.phone_number")) {
+      return next(errorHandler(409, "Duplicate Key (Phone Number)"));
+    }
     next(err);
   }
 }
