@@ -13,12 +13,13 @@ function checkIfInjectionCostIsValid(injectionCost) {
   }
 }
 
-async function addNewUser(name, phoneNo, address, cowName, breed, bullName, aiDate, injectionCost) {
-  checkIfPhoneNoIsValid(phoneNo);
+
+async function addNewUser(name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost) {
+  checkIfPhoneNoIsValid(phoneNumber);
   checkIfInjectionCostIsValid(injectionCost);
 
   return new Promise((resolve, reject) => {
-    db.run(queries.INSERT_USER_RECORDS_SQL, [name, phoneNo, address, cowName, breed, bullName, aiDate, injectionCost], (err) => {
+    db.run(queries.INSERT_USER_RECORDS_SQL, [name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost], (err) => {
       if (err) {
         reject(err);
       } else {
@@ -66,16 +67,24 @@ async function updateUser(id, data) {
     checkIfInjectionCostIsValid(data.injectionCost);
   }
 
-  return new Promise((resolve, reject) => {
-    db.run(queries.UPDATE_USER_SQL, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
+  const promises = [];
+  for (let [key, value] of Object.entries(data)) {
+    const promise = new Promise((resolve, reject) => {
+      db.run(queries.UPDATE_USER_SQL.replace("<column_name>", key), [value, id], (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
     });
-  });
+    promises.push(promise);
+  }
+
+  await Promise.all(promises);
+  return await getUser(id);
 }
+
 
 module.exports = {
   addNewUser,
