@@ -9,7 +9,7 @@ Request
 URL: /api/v1/admin/login
 METHOD: POST
 CONTENT-TYPE: application/json
-Data: {
+DATA: {
     email: "<your admin email>"
     password: "<your admin password">
 }
@@ -44,13 +44,13 @@ COOKIE: Admin cookie must
 CONTENT-TYPE: application/json
 DATA: {
   name: <string>,
-  phone_no: <number>,      => (max: 10 digit)
-  address: <string>,       => (max: 150 char)
-  cow_name: <string>,      => (max: 80 char)
-  breed: <string>,         => (max: 80 char)
-  bull_name: <string>      => (max: 80 char)
-  ai_date: <date>,
-  injection_cost: <string> => (max: 50 char)         
+  phoneNumber: <number>,     => (max: 10 digit)
+  address: <string>,         => (max: 255 char)
+  cowName: <string>,         => (max: 100 char)
+  cowBreed: <string>,        => (max: 100 char)
+  bullName: <string>         => (max: 100 char)
+  aiDate: <string>,          => (max: 50 char)
+  injectionCost: <number> 
 }
 
 Response: (Request Based)
