@@ -34,7 +34,8 @@ async function login(req, res, next) {
 async function createNewUser(req, res, next) {
   try {
     const {name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost} = req.body;
-    await User.addNewUser(name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost);
+    const newUser = await User.addNewUser(name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost);
+    console.log(newUser);
     res.status(201).json({
       success: true,
       statusCode: 201,
