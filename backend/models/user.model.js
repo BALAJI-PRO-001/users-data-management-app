@@ -13,6 +13,12 @@ function checkIfInjectionCostIsValid(injectionCost) {
   }
 }
 
+function validateId(id) {
+  if (id == null || id == undefined) {
+    throw new Error("Id is null or undefined");
+  }
+}
+
 
 async function addNewUser(name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost) {
   checkIfPhoneNoIsValid(phoneNumber);
@@ -45,6 +51,8 @@ async function getUsers() {
 
 
 async function getUser(id) {
+  validateId(id);
+
   return new Promise((resolve, reject) => {
     db.get(queries.SELECT_USER_SQL, id, (err, row) => {
       if (err) {
@@ -59,6 +67,8 @@ async function getUser(id) {
 
 
 async function updateUser(id, data) {
+  validateId(id);
+
   if (data.phoneNo) {
     checkIfPhoneNoIsValid(data.phoneNo);
   } 
@@ -86,9 +96,25 @@ async function updateUser(id, data) {
 }
 
 
+async function deleteUser(id) {
+  validateId(id);
+
+  return new Promise((resolve, reject) => {
+    db.run(queries.DELETE_USER_SQL, id, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+
 module.exports = {
   addNewUser,
   getUsers,
   getUser, 
-  updateUser
+  updateUser,
+  deleteUser
 };

@@ -121,7 +121,14 @@ async function updateUser(req, res, next) {
 
 async function deleteUser(req, res, next) {
   try {
+    const userID = req.params.id;
+    const userToDelete = await User.getUser(userID);
+    if (!userToDelete) {
+      return next(errorHandler("404", "User not found"));
+    }
 
+    await User.deleteUser(userID);
+    return res.status(204).json({});
   } catch(err) {
     next(err);
   }
