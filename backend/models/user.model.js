@@ -25,12 +25,20 @@ async function addNewUser(name, phoneNumber, address, cowName, cowBreed, bullNam
   checkIfInjectionCostIsValid(injectionCost);
 
   return new Promise((resolve, reject) => {
-    db.run(queries.INSERT_USER_RECORDS_SQL, [name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost], (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
+    db.serialize(() => {
+      db.run(queries.INSERT_USER_RECORDS_SQL, [name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost], (err) => {
+        if (err) {
+          reject(err);
+        }
+
+        db.get(queries.SELECT_LAST_USER_SQL, (err, row) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(row);
+          }
+        });
+      });
     });
   });
 }
@@ -54,7 +62,7 @@ async function getUser(id) {
   validateId(id);
 
   return new Promise((resolve, reject) => {
-    db.get(queries.SELECT_USER_SQL, id, (err, row) => {
+    db.get(queries.SELECT_USER_BY_ID_SQL, id, (err, row) => {
       if (err) {
         reject(err);
       } else {
@@ -80,7 +88,7 @@ async function updateUser(id, data) {
   const promises = [];
   for (let [key, value] of Object.entries(data)) {
     const promise = new Promise((resolve, reject) => {
-      db.run(queries.UPDATE_USER_SQL.replace("<column_name>", key), [value, id], (err) => {
+      db.run(queries.UPDATE_USER_BY_ID_SQL.replace("<column_name>", key), [value, id], (err) => {
         if (err) {
           reject(err);
         } else {
@@ -100,7 +108,21 @@ async function deleteUser(id) {
   validateId(id);
 
   return new Promise((resolve, reject) => {
-    db.run(queries.DELETE_USER_SQL, id, (err) => {
+    db.run(queries.DELETE_USER_BY_ID_SQL, id, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+
+
+async function deleteAllUsers() {
+  return new Promise((resolve, reject) => {
+    db.run(queries.DELETE_ALL_USERS_SQL, (err) => {
       if (err) {
         reject(err);
       } else {
@@ -116,5 +138,6 @@ module.exports = {
   getUsers,
   getUser, 
   updateUser,
-  deleteUser
+  deleteUser,
+  deleteAllUsers
 };
