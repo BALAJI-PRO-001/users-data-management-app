@@ -2,7 +2,7 @@
 **Below API routes are available for clients to make requests to the backend and access the corresponding services.**
 ## Admin Routes
 
-**API Route 1: Handles client requests for admin loggin**
+**API Route: Handles client requests for admin loggin**
 ### Usage
 ``` base
 Request
@@ -22,7 +22,22 @@ Response: (Request Based)
 }
 ```
 
-**API Route 2: Download users records from server**
+**API Route: Handles client requests for admin logout**
+### Usage
+``` base
+Request
+URL: /api/v1/admin/log-out
+METHOD: GET
+
+Response: (Request Based)
+{
+  success: true 
+  statusCode: 200  
+  message: "Admin has been logged out successfully 
+}
+```
+
+**API Route: Download users records from server**
 ### Usage
 ``` base
 Request
@@ -113,7 +128,18 @@ Request: Delete single user records
 URL: /api/v1/admin/users/<userID>
 METHOD: DELETE
 COOKIE: Admin cookie must 
-CONTENT-TYPE: application/json
+
+Response: (Request Based)
+status: 204 body: empty
+```
+
+
+### Usage
+``` base
+Request: Delete all users records
+URL: /api/v1/admin/users/clear/all
+METHOD: DELETE
+COOKIE: Admin cookie must 
 
 Response: (Request Based)
 status: 204 body: empty
