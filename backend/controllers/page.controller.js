@@ -21,7 +21,7 @@ function homePage(req, res) {
 }
 
 function addUserPage(req, res) {
-  return res.end(addUserHTML.replace("{{HEADER}}", addUserHTML));
+  return res.end(addUserHTML.replace("{{HEADER}}", headerHTML));
 }
 
 module.exports = {
