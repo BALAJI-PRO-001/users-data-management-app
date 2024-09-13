@@ -54,7 +54,6 @@ async function getUsers() {
       }
     });
   });
-  return users;
 }
 
 
@@ -70,7 +69,6 @@ async function getUser(id) {
       }
     });
   });
-  return user;
 }
 
 
