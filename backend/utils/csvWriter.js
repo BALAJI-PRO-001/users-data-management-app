@@ -1,9 +1,22 @@
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-const { USERS_RECORDS_CSV_FILE_PATH, CSV_WRITER_HEADERS } = require("./constants");
 
-const csvWriter = createCsvWriter({
-  path: USERS_RECORDS_CSV_FILE_PATH,
-  header: CSV_WRITER_HEADERS,
-});
+async function writeRecords({path, header}, arrayOfObjRecords) {
+  if (!path || !header) {
+    throw new Error("Path or header are null or undefined");
+  }
 
-module.exports = csvWriter;
+  if (!arrayOfObjRecords) {
+    throw new Error("Records is null or undefined");
+  }
+
+  const csvWriter = createCsvWriter({
+    path: path,
+    header: header
+  });
+
+  await csvWriter.writeRecords(arrayOfObjRecords);
+}
+
+module.exports = {
+  writeRecords
+};
