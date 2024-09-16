@@ -7,44 +7,54 @@ function checkIfPhoneNoIsValid(phoneNo) {
   }
 }
 
-function checkIfInjectionCostIsValid(injectionCost) {
-  if (typeof injectionCost !== "number" || isNaN(injectionCost)) {
-    throw new Error("Injection cost must be a valid number not string");
+
+function validatePhoneNumber(phoneNumber) {
+  if (!phoneNumber) {
+    throw new Error("Phone number is null or undefined");
+  }
+
+  if (String(phoneNumber).length != 10) {
+    throw new Error("Phone number must be 10 digit long");
   }
 }
 
+
 function validateId(id) {
-  if (id == null || id == undefined) {
+  if (!id) {
     throw new Error("Id is null or undefined");
   }
 }
 
 
-async function addNewUser(name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost) {
+async function addNewUser(name, phoneNumber, address) {
   checkIfPhoneNoIsValid(phoneNumber);
-  checkIfInjectionCostIsValid(injectionCost);
+
+  const isUserExists = await getUserByPhoneNumber(phoneNumber);
+  if (isUserExists) {
+    throw new Error("SQLITE_CONSTRAINT: UNIQUE constraint failed: users.phone_number");
+  }
 
   return new Promise((resolve, reject) => {
     db.serialize(() => {
-      db.run(queries.INSERT_USER_RECORDS_SQL, [name, phoneNumber, address, cowName, cowBreed, bullName, aiDate, injectionCost], (err) => {
+      db.run(queries.INSERT_USER_RECORDS_SQL, [name, phoneNumber, address], (err) => {
         if (err) {
           reject(err);
         }
+      });
 
-        db.get(queries.SELECT_LAST_USER_SQL, (err, row) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(row);
-          }
-        });
+      db.get(queries.SELECT_LAST_USER_SQL, (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row);
+        }
       });
     });
   });
 }
 
 
-async function getUsers() {
+async function getAllUsers() {
   return new Promise((resolve, reject) => {
     db.all(queries.SELECT_ALL_USERS_SQL, (err, rows) => {
       if (err) {
@@ -57,11 +67,26 @@ async function getUsers() {
 }
 
 
-async function getUser(id) {
+async function getUserById(id) {
   validateId(id);
 
   return new Promise((resolve, reject) => {
     db.get(queries.SELECT_USER_BY_ID_SQL, id, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
+
+async function getUserByPhoneNumber(phoneNumber) {
+  validatePhoneNumber(phoneNumber);
+
+  return new Promise((resolve, reject) => {
+    db.get(queries.SELECT_USER_BY_PHONE_NUMBER_SQL, phoneNumber, (err, row) => {
       if (err) {
         reject(err);
       } else {
@@ -98,7 +123,7 @@ async function updateUser(id, data) {
   }
 
   await Promise.all(promises);
-  return await getUser(id);
+  return await getUserById(id);
 }
 
 
@@ -133,8 +158,9 @@ async function deleteAllUsers() {
 
 module.exports = {
   addNewUser,
-  getUsers,
-  getUser, 
+  getAllUsers,
+  getUserById, 
+  getUserByPhoneNumber,
   updateUser,
   deleteUser,
   deleteAllUsers

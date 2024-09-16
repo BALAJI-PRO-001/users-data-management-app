@@ -15,10 +15,24 @@ function connect() {
 }
 
 const db = connect();
-db.run(queries.CREATE_USERS_TABLE_SQL, (err) => {
-  if (err) {
-    console.log("Error : " + err.message);
-  }
+db.serialize(() => {
+  db.run(queries.CREATE_USERS_TABLE_SQL, (err) => {
+    if (err) {
+      console.log("Error : " + err.message);
+    }
+  });
+  
+  db.run(queries.CREATE_COWS_TABLE_SQL, (err) => {
+    if (err) {
+      console.log("Error: " + err.message);
+    }
+  });
+
+  db.run(queries.CREATE_INJECTION_COST_AND_AI_DATE_TABLE_SQL, (err) => {
+    if (err) {
+      console.log("Error: " + err.message);
+    }
+  });
 });
 
 module.exports = { db }; 
