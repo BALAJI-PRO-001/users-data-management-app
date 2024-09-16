@@ -1,6 +1,7 @@
 const express = require("express");
 const pageRouter = require("./routes/page.route");
 const adminRouter = require("./routes/admin.route");
+const recordRouter = require("./routes/record.route");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const app = express();
@@ -8,7 +9,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1", adminRouter);
+app.use("/api/v1", recordRouter);
 
 app.use(express.static(path.join(__dirname, "../client/public")));
 app.use("/", pageRouter);

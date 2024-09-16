@@ -6,11 +6,11 @@ const HEADER_COMPONENT_FILE_PATH = path.join(__dirname, "../../client/views/comp
 const INDEX_PAGE_FILE_PATH = path.join(__dirname, "../../client/views/index.html");
 const HOME_PAGE_FILE_PATH = path.join(__dirname, "../../client/views/pages/home.html");
 const ADD_USER_PAGE_FILE_PATH = path.join(__dirname, "../../client/views/pages/add-user.html");
-const SQLITE3_DATABASE_PATH = path.join(__dirname, "../db/sqlite3/db/users.db");
+const SQLITE3_DATABASE_PATH = path.join(__dirname, "../db/sqlite3/db/database.db");
 
 
 const CSV_WRITER_HEADERS = [
-  {id: "id", title: "ID"},
+  {id: "userId", title: "ID"},
   {id: "name", title: "NAME"},
   {id: "phoneNumber", title: "PHONE_NUMBER"},
   {id: "address", title: "ADDRESS"},
@@ -19,7 +19,6 @@ const CSV_WRITER_HEADERS = [
   {id: "bullName", title: "BULL_NAME"},
   {id: "aiDate", title: "AI_DATE"},
   {id: "injectionCost", title: "INJECTION_COST"},
-  {id: "dateAndTime", title: "DATE_AND_TIME_IN_DB"}
 ];
 
 module.exports = {
