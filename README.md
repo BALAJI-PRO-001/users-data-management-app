@@ -2,19 +2,22 @@
 **Below API routes are available for clients to make requests to the backend and access the corresponding services.**
 ## Admin Routes
 
-**API Route: Handles client requests for admin loggin**
+**Route for Handles client requests for admin loggin**
 ### Usage
 ``` base
-Request
+Request Information
+===================
 URL: /api/v1/admin/login
 METHOD: POST
 CONTENT-TYPE: application/json
-DATA: {
+BODY: {
     email: "<your admin email>"
     password: "<your admin password">
 }
 
-Response: (Request Based)
+
+Response (Request Based)
+=========================
 {
   success: true 
   statusCode: 200  
@@ -22,14 +25,16 @@ Response: (Request Based)
 }
 ```
 
-**API Route: Handles client requests for admin logout**
+**Router for Handles client requests for admin logout**
 ### Usage
 ``` base
-Request
+Request Information
+===================
 URL: /api/v1/admin/log-out
 METHOD: GET
 
-Response: (Request Based)
+Response (Request Based)
+=========================
 {
   success: true 
   statusCode: 200  
@@ -37,110 +42,99 @@ Response: (Request Based)
 }
 ```
 
-**API Route: Download users records from server**
+## Records Routes
+**Route for Create new record**
 ### Usage
 ``` base
-Request
-URL: /api/v1/admin/users-records/download
-METHOD: GET
-COOKIE: Admin cookie must 
-
-Response: (Request Based)
-File: usersRecords.json
-```
-
-**API Routes For CRUD: CRUD operation**
-### Usage
-``` base
-Request: Create new user
-URL: /api/v1/admin/users
+Request Information
+===================
+URL: /api/v1/records
 METHOD: POST
 COOKIE: Admin cookie must 
 CONTENT-TYPE: application/json
-DATA: {
-  name: <string>,
-  phoneNumber: <number>,     => (max: 10 digit)
-  address: <string>,         => (max: 255 char)
-  cowName: <string>,         => (max: 100 char)
-  cowBreed: <string>,        => (max: 100 char)
-  bullName: <string>         => (max: 100 char)
-  aiDate: <string>,          => (max: 50 char)
-  injectionCost: <number> 
+BODY: {
+  user: {
+      name: <string>
+      phoneNumber: <number>,
+      address: <string>
+  },
+  cows: [
+    {
+        cowName: <string>,
+        cowBreed: <string>,
+        bullName: <string>,
+        injectionInfoAndAiDates: [
+            {
+              name: <string>,
+              cost: <number>,
+              date: <string>
+            }, 
+            {}, {}, {} ......
+        ]
+    }, 
+    {}, {}, {}, .......
+  ]
 }
 
-Response: (Request Based)
+Response (Request Based)
+=========================
 {
   success: true,
   statusCode: 201,
-  message: "New user created"
+  message: "New reocrd created successfully"
 }
 ```
 
+**Route for Get All Records**
 ### Usage
 ``` base
-Request: Get all users records
-URL: /api/v1/admin/users/all
+Request Information
+===================
+URL: /api/v1/records/all
 METHOD: GET
 COOKIE: Admin cookie must 
 
-Response: (Request Based)
-[
-  {}, {}, {}, {}
-]
-```
 
-### Usage
-``` base
-Request: Get single user records
-URL: /api/v1/admin/users/<userID>
-METHOD: GET
-COOKIE: Admin cookie must 
-
-Response: (Request Based)
+Response (Request Based)
+=========================
 {
-  // user records based by id
-  ....
+  success: true,
+  statusCode: 200,
+  data: {
+    records: [
+      {
+        user: {
+              id: <userId>,
+              name: <name>,
+              phoneNumber: <phoneNumber>,
+              address: <address>,
+              isCurrentUser: <state>,
+              createdAt: <dateAndTimeInDb>
+          },
+        cows: [
+            {
+              id: <cowId>,
+              cowName: <cowName>,
+              cowBreed: <cowBreed>,
+              bullName: <bullName>,
+              injectionInfoAndAiDates: [
+                {
+                  name: <injectionName>,
+                  cost: <injectionCost>,
+                  date: <aiDate>
+                },
+                {}, {}, {}, ...... injectionInfoAndAiDates
+                            
+              ],
+              createdAt: <dateAndTimeInDb>
+            },
+            {}, {}, {}, ..... cows
+        ],
+
+        "recordCreatedAt": "2024-09-17 08:56:07"
+      },
+    ]
+  }
 }
 ```
 
-### Usage
-``` base
-Request: Update single user records
-URL: /api/v1/admin/users/<userID>
-METHOD: PATCH
-COOKIE: Admin cookie must 
-CONTENT-TYPE: application/json
-DATA: {
-  <key>: <value>
-  ....
-}
-
-Response: (Request Based)
-{
-  // updated user records
-  ....
-}
-```
-
-### Usage
-``` base
-Request: Delete single user records
-URL: /api/v1/admin/users/<userID>
-METHOD: DELETE
-COOKIE: Admin cookie must 
-
-Response: (Request Based)
-status: 204 body: empty
-```
-
-
-### Usage
-``` base
-Request: Delete all users records
-URL: /api/v1/admin/users/clear/all
-METHOD: DELETE
-COOKIE: Admin cookie must 
-
-Response: (Request Based)
-status: 204 body: empty
-```
