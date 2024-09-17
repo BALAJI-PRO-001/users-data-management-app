@@ -21,7 +21,7 @@ function validatePhoneNumber(phoneNumber) {
 
 function validateId(id) {
   if (!id) {
-    throw new Error("Id is null or undefined");
+    throw new Error("Give user id is null or undefined.");
   }
 }
 
