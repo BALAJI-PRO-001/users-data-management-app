@@ -39,8 +39,8 @@ async function getAllRecords(req, res, next) {
 
 
 async function getRecord(req, res, next) {
+  const { userId } = req.params;
   try {
-    const { userId } = req.params;
     const record = await Record.getRecordByUserId(userId);
     res.status(200).json({
       success: true,
@@ -50,8 +50,8 @@ async function getRecord(req, res, next) {
       }
     });
   } catch(err) {
-    if (err.message.includes("User not found")) {
-      return next(errorHandler(404, "User not found"));
+    if (err.message.includes("No user found for the given ID")) {
+      return next(errorHandler(404, `Record not found for the given user ID: ${userId}.`));
     }
     next(err);
   }
@@ -69,8 +69,8 @@ async function addNewCowRecordToUser(req, res, next) {
       message: `A new cow record was successfully created for user ID: ${userId}`
     });
   } catch(err) {
-    if (err.message.includes("User not found")) {
-      return next(errorHandler(404, "User not found"));
+    if (err.message.includes("No user found for the given ID")) {
+      return next(errorHandler(404, err.message));
     }
     next(err);
   }
@@ -97,6 +97,16 @@ async function deleteAllRecords(req, res, next) {
 }
 
 
+async function removeCowFormUser(req, res, next) {
+  try {
+    const { userId, cowId } = req.body;
+    await Record.removeCowFormUser(userId, cowId);
+  } catch(err) {
+    next(err);
+  }
+}
+
+
 async function downloadRecords(req, res, next) {
   try {
     await Record.saveRecordsToFile();
@@ -111,5 +121,6 @@ module.exports = {
   getRecord,
   deleteAllRecords,
   addNewCowRecordToUser,
-  downloadRecords
+  downloadRecords,
+  removeCowFormUser
 };

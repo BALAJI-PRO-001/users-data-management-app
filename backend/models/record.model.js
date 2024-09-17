@@ -23,7 +23,7 @@ async function createNewRecord(user, cows) {
       ...newCows
     ],
     recordCreatedAt: newUser.date_and_time
-  };
+  };  
 }
 
 
@@ -60,7 +60,7 @@ async function getAllRecords() {
 async function getRecordByUserId(id) {
   const user = await User.getUserById(id);
   if (!user) {
-    throw new Error("User not found");
+    throw new Error(`No user found for the given ID: ${id}.`);
   }
   const cows = await Cow.getCowsWithInjectionInfoAndAiDatesByUserId(id);
 
@@ -87,7 +87,7 @@ async function deleteAllRecords() {
 async function addNewCowRecordToUser(userId, cowName, cowBreed, bullName, injectionCostsAndAiDates) {
     const user = await User.getUserById(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new Error(`No user found for the given ID: ${userId}.`);
     }
     return await Cow.addNewCow(userId, cowName, cowBreed, bullName, injectionCostsAndAiDates);
 }
@@ -95,6 +95,20 @@ async function addNewCowRecordToUser(userId, cowName, cowBreed, bullName, inject
 
 async function addNewInjectionInfoAndAiDatesToCow(cowId, injectionName, injectionCost, aiDate) {
   
+}
+
+
+
+async function removeCowFormUser(userId, cowId) {
+  const user = await User.getUserById(userId);
+  if (!user) {
+    throw new Error("");
+  }
+
+  const cowToDelete = await Cow.getCowById(cowId);
+  if (!cowToDelete) {
+    // throw new Error();
+  }
 }
 
 
@@ -110,5 +124,6 @@ module.exports = {
   getAllRecords,
   getRecordByUserId,
   deleteAllRecords,
+  removeCowFormUser,
   saveRecordsToFile
 }

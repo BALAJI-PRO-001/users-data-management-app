@@ -70,9 +70,22 @@ async function getInjectionInfoAndAiDatesByCowId(cowId) {
 }
 
 
+async function getCowById(id) {
+  return new Promise((resolve, reject) => {
+    db.get(queries.SELECT_COW_BY_ID, id, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
+
 async function getAllCowsWithInjectionInfoAndAiDates() {
   let cows = await new Promise((resolve, reject) => {
-    db.all(queries.SELECT_ALL_COWS__SQL, (err, rows) => {
+    db.all(queries.SELECT_ALL_COWS_SQL, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -137,10 +150,22 @@ async function deleteAllCows() {
 }
 
 
+async function deleteCow(id) {
+  return new Promise(() => {
+    db.run(queries.DELETE_COW_BY_ID_SQL, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 
 async function getCowsWithInjectionInfoAndAiDatesByUserId(userId) {
   const cows = await new Promise((resolve, reject) => {
-    db.all(queries.SELECT_ALL_COWS__SQL, (err, rows) => {
+    db.all(queries.SELECT_COWS_BY_USER_ID_SQL, userId, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -169,6 +194,8 @@ async function getCowsWithInjectionInfoAndAiDatesByUserId(userId) {
 module.exports = {
   addNewCow,
   getAllCowsWithInjectionInfoAndAiDates,
+  getCowById,
   deleteAllCows,
+  deleteCow,
   getCowsWithInjectionInfoAndAiDatesByUserId
 };
