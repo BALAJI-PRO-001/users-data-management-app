@@ -1,23 +1,23 @@
 const User = require("./user.model");
 const Cow = require("./cow.model");
-const { db } = require("../db/sqlite3");
-const queries = require("../db/sqlite3/queries");
+
 
 async function createNewRecord(user, cows) {
   const newUser = await User.addNewUser(user.name, user.phoneNumber, user.address);
   const newCows = [];
-  for (let {cowName, cowBreed, bullName, injectionCostsAndAiDates} of cows) {
-    const newCow = await Cow.addNewCow(newUser.id, cowName, cowBreed, bullName, injectionCostsAndAiDates);
+  for (let {cowName, cowBreed, bullName, injectionInfoAndAiDates} of cows) {
+    const newCow = await Cow.addNewCow(newUser.id, cowName, cowBreed, bullName, injectionInfoAndAiDates);
     newCows.push(newCow);
   }
 
   return {
     user: {
-      userId: newUser.id,
+      id: newUser.id,
       name: newUser.name,
       phoneNumber: newUser.phone_number,
       address: newUser.address,
-      userCreatedAt: newUser.date_and_time 
+      isCurrentUser: newUser.is_current_user === 1 ? true : false,
+      createdAt: newUser.date_and_time 
     },
     cows: [
       ...newCows
@@ -28,37 +28,53 @@ async function createNewRecord(user, cows) {
 
 
 async function getAllRecords() {
-  const sql = `
-    SELECT 
-      users.name AS user_name, 
-      users.phone_number AS user_phone_number,
-      users.address AS user_address,
-      GROUP_CONCAT(cows.cow_name, ', ') AS cows_names,
-      GROUP_CONCAT(cows.cow_breed, ', ') AS cows_breeds,
-      GROUP_CONCAT(cows.bull_name, ', ') AS cows_bull_names,
-      GROUP_CONCAT(injection_costs_and_ai_dates.date, ', ') AS injection_dates,
-      GROUP_CONCAT(injection_costs_and_ai_dates.cost, ', ') AS injection_costs
-    FROM 
-      users 
-    INNER JOIN 
-      cows ON users.id = cows.user_id 
-    INNER JOIN 
-      injection_costs_and_ai_dates ON cows.id = injection_costs_and_ai_dates.cow_id 
-    GROUP BY 
-      users.name, users.phone_number, users.address;
-  `;
+ const users = await User.getAllUsers();
+ const cows = await Cow.getAllCowsWithInjectionInfoAndAiDates();
+ const records = users.map(({id, name, phone_number, address, is_current_user, date_and_time}) => {
+  const userCows = [];
 
-  try {
-    db.all(sql, (err, rows) => {
-      if (err) {
-        console.error(err.message);
-        return;
-      }
-      console.log(rows);
-    });
-  } catch (error) {
-    console.error('Error executing query:', error);
+  for (let cow of cows) {
+    if (cow.userId == id) {
+      const {userId, ...rest} = cow;
+      userCows.push(rest);
+    }
   }
+
+  return {
+    user: {
+      id: id,
+      name: name,
+      phoneNumber: phone_number,
+      address: address,
+      isCurrentUser: is_current_user === 1 ? true : false,
+      createdAt: date_and_time
+    },
+    cows: userCows,
+    recordCreatedAt: date_and_time
+  };
+ });
+ return records;
+}
+
+
+async function getRecordByUserId(id) {
+  const user = await User.getUserById(id);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const cows = await Cow.getCowsWithInjectionInfoAndAiDatesByUserId(id);
+
+  return {
+    user: {
+      id: id,
+      name: user.name,
+      phoneNumber: user.phone_number,
+      address: user.address,
+      createdAt: user.date_and_time
+    },
+    cows: cows,
+    recordCreatedAt: user.date_and_time
+  };
 }
 
 
@@ -68,7 +84,7 @@ async function deleteAllRecords() {
 }
 
 
-async function addNewCowRecordToUser(userId, {cowName, cowBreed, bullName, injectionCostsAndAiDates}) {
+async function addNewCowRecordToUser(userId, cowName, cowBreed, bullName, injectionCostsAndAiDates) {
     const user = await User.getUserById(userId);
     if (!user) {
       throw new Error("User not found");
@@ -77,9 +93,22 @@ async function addNewCowRecordToUser(userId, {cowName, cowBreed, bullName, injec
 }
 
 
+async function addNewInjectionInfoAndAiDatesToCow(cowId, injectionName, injectionCost, aiDate) {
+  
+}
+
+
+async function saveRecordsToFile(path) {
+  const records = await getAllRecords();
+  
+}
+
+
 module.exports = {
   createNewRecord,
   addNewCowRecordToUser,
   getAllRecords,
-  deleteAllRecords
+  getRecordByUserId,
+  deleteAllRecords,
+  saveRecordsToFile
 }
