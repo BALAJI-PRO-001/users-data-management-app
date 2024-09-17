@@ -1,0 +1,64 @@
+
+import validator from "./validator.js"
+
+export function setMessage(element,message) {
+  if(!element) {
+    throw new Error("given element is null");
+  } 
+  element.innerText = message;
+}
+
+export function setIcon(element,newPath,oldPath) {
+  if(!element) {
+    throw new Error("Element not found...");
+  }
+  if(element.class.match(oldpath)) {
+    element.classList.remove(oldPath);
+    element.classList.add(newPath);
+  }
+}
+
+export function setBorder(element,className) {
+  if(!element) {
+    throw new Error("given element is null");
+  } 
+  element.classList.add(className);
+}
+
+export function removeBorder(element,className) {
+  if(!element) {
+    throw new Error("given element is null");
+  } 
+  element.classList.remove(className);
+}
+
+export function ValidateNameandUpdateUi(e) {
+  const name = e.target.value;
+  const {isValid,message} = validator.isValidName(name);
+  const errElement = e.target.parentElement.querySelector("#Err-element");
+  if(name == "") {
+    removeBorder(e.target,"is-invalid")
+    setMessage(errElement,"");
+  }
+  if(!isValid) {
+    setBorder(e.target,"is-invalid");
+    setMessage(errElement,message);
+  }
+}
+
+export function validatePhoneandUpdateUi(e) {
+  const phoneNo = e.target.value;
+  const {isValid,message} = validator.isValidPhoneNo(phoneNo);
+  const errElement = e.target.parentElement.querySelector("#Err-element");
+  console.log(phoneNo);
+  if(phoneNo == "") {
+    removeBorder(e.target,"is-invalid");
+    setMessage(errElement,"");
+    return;
+  } 
+  if(!isValid) {
+    setBorder(e.target,"is-invalid");
+    setMessage(errElement,message);
+  } 
+}
+
