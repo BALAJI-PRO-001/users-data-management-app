@@ -152,25 +152,6 @@ Response (Request Based)
 =========================
 {
   success: true,
-  statusCode: 201,
-  message: "New reocrd created successfully"
-}
-```
-
-**Route for Get All Records**
-### Usage
-``` base
-Request Information
-===================
-URL: /api/v1/records/all
-METHOD: GET
-COOKIE: Admin cookie must 
-
-
-Response (Request Based)
-=========================
-{
-  success: true,
   statusCode: 200,
   data: {
     records: {
@@ -207,3 +188,4 @@ Response (Request Based)
   }
 }
 ```
+
