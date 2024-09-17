@@ -60,7 +60,7 @@ async function getAllRecords() {
 async function getRecordByUserId(id) {
   const user = await User.getUserById(id);
   if (!user) {
-    throw new Error(`No user found for the given ID: ${id}.`);
+    throw new Error(`User not found for the specified ID: ${id}.`);
   }
   const cows = await Cow.getCowsWithInjectionInfoAndAiDatesByUserId(id);
 
@@ -87,7 +87,7 @@ async function deleteAllRecords() {
 async function addNewCowRecordToUser(userId, cowName, cowBreed, bullName, injectionCostsAndAiDates) {
     const user = await User.getUserById(userId);
     if (!user) {
-      throw new Error(`No user found for the given ID: ${userId}.`);
+      throw new Error(`User not found for the specified ID: ${userId}.`);
     }
     return await Cow.addNewCow(userId, cowName, cowBreed, bullName, injectionCostsAndAiDates);
 }
@@ -102,13 +102,15 @@ async function addNewInjectionInfoAndAiDatesToCow(cowId, injectionName, injectio
 async function removeCowFormUser(userId, cowId) {
   const user = await User.getUserById(userId);
   if (!user) {
-    throw new Error("");
+    throw new Error(`User not found for the specified ID: ${userId}.`);
   }
 
   const cowToDelete = await Cow.getCowById(cowId);
   if (!cowToDelete) {
-    // throw new Error();
+    throw new Error(`Cow not found for the specified ID: ${cowId}.`);
   }
+
+  
 }
 
 

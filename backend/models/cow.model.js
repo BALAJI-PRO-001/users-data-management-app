@@ -152,7 +152,7 @@ async function deleteAllCows() {
 
 async function deleteCow(id) {
   return new Promise(() => {
-    db.run(queries.DELETE_COW_BY_ID_SQL, (err) => {
+    db.run(queries.DELETE_COW_BY_ID_SQL, id, (err) => {
       if (err) {
         reject(err);
       } else {

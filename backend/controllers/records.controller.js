@@ -50,7 +50,7 @@ async function getRecord(req, res, next) {
       }
     });
   } catch(err) {
-    if (err.message.includes("No user found for the given ID")) {
+    if (err.message.includes("User not found for the specified ID")) {
       return next(errorHandler(404, `Record not found for the given user ID: ${userId}.`));
     }
     next(err);
@@ -69,7 +69,7 @@ async function addNewCowRecordToUser(req, res, next) {
       message: `A new cow record was successfully created for user ID: ${userId}`
     });
   } catch(err) {
-    if (err.message.includes("No user found for the given ID")) {
+    if (err.message.includes("User not found for the specified ID")) {
       return next(errorHandler(404, err.message));
     }
     next(err);
@@ -99,8 +99,9 @@ async function deleteAllRecords(req, res, next) {
 
 async function removeCowFormUser(req, res, next) {
   try {
-    const { userId, cowId } = req.body;
+    const { userId, cowId } = req.params;
     await Record.removeCowFormUser(userId, cowId);
+    return res.status(204).json({});
   } catch(err) {
     next(err);
   }
