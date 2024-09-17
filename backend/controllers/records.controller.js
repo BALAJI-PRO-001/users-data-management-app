@@ -66,7 +66,7 @@ async function addNewCowRecordToUser(req, res, next) {
     res.status(201).json({
       success: true,
       statusCode: 201,
-      message: `A new cow record was successfully created for user ID: ${userId}`
+      message: `New injection info and AI dates were successfully created for Cow ID: ${cowId}.`
     });
   } catch(err) {
     if (err.message.includes("User not found for the specified ID")) {
@@ -77,14 +77,20 @@ async function addNewCowRecordToUser(req, res, next) {
 }
 
 
-// async function addNewInjectionInfoAndAiDates(req, res, next) {
-//   try {
-    
-//     await Record.addNewInjectionInfoAndAiDatesToCow(cowId, );
-//   } catch(err) {
-//     next(err);
-//   }
-// }
+async function addNewInjectionInfoAndAiDatesToCow(req, res, next) {
+  try {
+    const { userId, cowId } = req.params;
+    const { name, cost, date } = req.body;
+    await Record.addNewInjectionInfoAndAiDatesToCow(userId, cowId, name, cost, date);
+    res.status(201).json({
+      success: true,
+      statusCode: 201,
+      message: `New injection info and AI dates have been successfully created for Cow ID: ${cowId}.`
+    });
+  } catch(err) {
+    next(err);
+  }
+}
 
 
 async function deleteAllRecords(req, res, next) {
@@ -122,6 +128,7 @@ module.exports = {
   getRecord,
   deleteAllRecords,
   addNewCowRecordToUser,
+  addNewInjectionInfoAndAiDatesToCow,
   downloadRecords,
   removeCowFormUser
 };

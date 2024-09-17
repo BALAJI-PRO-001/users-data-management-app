@@ -2,7 +2,16 @@ const { db } = require("../db/sqlite3");
 const queries = require("../db/sqlite3/queries");
 
 
+function validateId(id, name) {
+  if (!id) {
+    throw new Error(`Given ${name} is null or undefined.`);
+  }
+}
+
+
 async function addNewCow(userID, cowName, cowBreed, bullName, injectionInfoAndAiDates) {
+  validateId(userID, "user")
+
   const newCow = await new Promise((resolve, reject) => {
     db.serialize(() => {
       db.run(queries.INSERT_COW_RECORDS_SQL, [userID, cowName, cowBreed, bullName], (err) => {
@@ -21,7 +30,7 @@ async function addNewCow(userID, cowName, cowBreed, bullName, injectionInfoAndAi
     });
   });
 
-  await insertInjectionInfoAndAiDates(newCow.id, injectionInfoAndAiDates);
+  await addNewInjectionInfoAndAiDatesToCow(newCow.id, injectionInfoAndAiDates);
   injectionInfoAndAiDates = await getInjectionInfoAndAiDatesByCowId(newCow.id);
 
   return {
@@ -38,7 +47,9 @@ async function addNewCow(userID, cowName, cowBreed, bullName, injectionInfoAndAi
 
 
 
-async function insertInjectionInfoAndAiDates(cowId, injectionInfoAndAiDates) {
+async function addNewInjectionInfoAndAiDatesToCow(cowId, injectionInfoAndAiDates) {
+  validateId(cowId, "cow");
+
   const promises = [];
 
   for (let { name, cost, date } of injectionInfoAndAiDates) {
@@ -58,6 +69,8 @@ async function insertInjectionInfoAndAiDates(cowId, injectionInfoAndAiDates) {
 
 
 async function getInjectionInfoAndAiDatesByCowId(cowId) {
+  validateId(cowId, "cow");
+
   return new Promise((resolve, reject) => {
     db.all(queries.SELECT_INJECTION_INFO_AND_AI_DATES_BY_COW_ID_SQL, cowId, (err, rows) => {
       if (err) {
@@ -71,6 +84,8 @@ async function getInjectionInfoAndAiDatesByCowId(cowId) {
 
 
 async function getCowById(id) {
+  validateId(id, "cow");
+
   return new Promise((resolve, reject) => {
     db.get(queries.SELECT_COW_BY_ID, id, (err, row) => {
       if (err) {
@@ -151,7 +166,9 @@ async function deleteAllCows() {
 
 
 async function deleteCow(id) {
-  return new Promise(() => {
+  validateId(id, "cow");
+
+  return new Promise((resolve, reject) => {
     db.run(queries.DELETE_COW_BY_ID_SQL, id, (err) => {
       if (err) {
         reject(err);
@@ -164,6 +181,8 @@ async function deleteCow(id) {
 
 
 async function getCowsWithInjectionInfoAndAiDatesByUserId(userId) {
+  validateId(userId, "user");
+
   const cows = await new Promise((resolve, reject) => {
     db.all(queries.SELECT_COWS_BY_USER_ID_SQL, userId, (err, rows) => {
       if (err) {
@@ -191,11 +210,14 @@ async function getCowsWithInjectionInfoAndAiDatesByUserId(userId) {
 }
 
 
+
+
 module.exports = {
   addNewCow,
   getAllCowsWithInjectionInfoAndAiDates,
   getCowById,
   deleteAllCows,
   deleteCow,
-  getCowsWithInjectionInfoAndAiDatesByUserId
+  getCowsWithInjectionInfoAndAiDatesByUserId,
+  addNewInjectionInfoAndAiDatesToCow
 };

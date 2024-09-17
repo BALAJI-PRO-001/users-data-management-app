@@ -9,7 +9,7 @@ const {
   deleteAllRecords,
   downloadRecords,
   removeCowFormUser,
-  addNewInjectionInfoAndAiDates
+  addNewInjectionInfoAndAiDatesToCow
 } = require("../controllers/records.controller");
 
 router.post("/records",verifyAdminAuthenticationToken, createNewRecord)
@@ -18,7 +18,7 @@ router.post("/records",verifyAdminAuthenticationToken, createNewRecord)
       .delete("/records/all", verifyAdminAuthenticationToken, deleteAllRecords)
       .post("/records/:userId/cows",verifyAdminAuthenticationToken, addNewCowRecordToUser)
       .delete("/records/:userId/cows/:cowId", verifyAdminAuthenticationToken, removeCowFormUser)
-      // .post("/records/:userId/cows/:cowId", verifyAdminAuthenticationToken, addNewInjectionInfoAndAiDates)
+      .post("/records/:userId/cows/:cowId/inject-info-ai-dates", verifyAdminAuthenticationToken, addNewInjectionInfoAndAiDatesToCow)
       .get("/records/download", verifyAdminAuthenticationToken, downloadRecords);
 
 module.exports = router;

@@ -93,8 +93,18 @@ async function addNewCowRecordToUser(userId, cowName, cowBreed, bullName, inject
 }
 
 
-async function addNewInjectionInfoAndAiDatesToCow(cowId, injectionName, injectionCost, aiDate) {
-  
+async function addNewInjectionInfoAndAiDatesToCow(userId, cowId, name, cost, date) {
+  const user = await User.getUserById(userId);
+  if (!user) {
+    throw new Error(`User not found for the specified ID: ${userId}.`);
+  }
+
+  const cow = await Cow.getCowById(cowId);
+  if (!cow) {
+    throw new Error(`Cow not found for the specified ID: ${cowId}.`);
+  }
+
+  await Cow.addNewInjectionInfoAndAiDatesToCow(cowId, [{name, cost, date}]);
 }
 
 
@@ -110,7 +120,7 @@ async function removeCowFormUser(userId, cowId) {
     throw new Error(`Cow not found for the specified ID: ${cowId}.`);
   }
 
-  
+  await Cow.deleteCow(cowId);
 }
 
 
@@ -127,5 +137,6 @@ module.exports = {
   getRecordByUserId,
   deleteAllRecords,
   removeCowFormUser,
-  saveRecordsToFile
+  saveRecordsToFile,
+  addNewInjectionInfoAndAiDatesToCow
 }
