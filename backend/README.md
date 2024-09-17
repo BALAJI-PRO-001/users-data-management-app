@@ -11,8 +11,8 @@ URL: /api/v1/admin/login
 METHOD: POST
 CONTENT-TYPE: application/json
 BODY: {
-    email: "<your admin email>"
-    password: "<your admin password">
+    email: <string>
+    password: <string>
 }
 
 
@@ -81,7 +81,7 @@ Response (Request Based)
 {
   success: true,
   statusCode: 201,
-  message: "New reocrd created successfully"
+  message: "New record created successfully"
 }
 ```
 
