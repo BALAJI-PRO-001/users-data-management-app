@@ -2,7 +2,7 @@ const { db } = require("../db/sqlite3");
 const queries = require("../db/sqlite3/queries");
 
 
-async function addNewCow(userID, cowName, cowBreed, bullName, injectionCostsAndAiDates) {
+async function addNewCow(userID, cowName, cowBreed, bullName, injectionInfoAndAiDates) {
   const newCow = await new Promise((resolve, reject) => {
     db.serialize(() => {
       db.run(queries.INSERT_COW_RECORDS_SQL, [userID, cowName, cowBreed, bullName], (err) => {
@@ -21,29 +21,29 @@ async function addNewCow(userID, cowName, cowBreed, bullName, injectionCostsAndA
     });
   });
 
-  await insertNewInjectionCostsAndAiDates(newCow.id, injectionCostsAndAiDates);
-  injectionCostsAndAiDates = await getInjectionCostsAndAiDatesByCowId(newCow.id);
+  await insertInjectionInfoAndAiDates(newCow.id, injectionInfoAndAiDates);
+  injectionInfoAndAiDates = await getInjectionInfoAndAiDatesByCowId(newCow.id);
 
   return {
-    cowId: newCow.id,
+    id: newCow.id,
     cowName: newCow.cow_name,
     cowBreed: newCow.cow_name,
     bullName: newCow.bull_name,
-    cowCreatedAt: newCow.date_and_time,
-    injectionCostsAndAiDates: [
-      ...injectionCostsAndAiDates
+    createdAt: newCow.date_and_time,
+    injectionInfoAndAiDates: [
+      ...injectionInfoAndAiDates
     ]
   };
 }
 
 
 
-async function insertNewInjectionCostsAndAiDates(cowId, injectionCostsAndAiDates) {
+async function insertInjectionInfoAndAiDates(cowId, injectionInfoAndAiDates) {
   const promises = [];
 
-  for (let { cost, date } of injectionCostsAndAiDates) {
+  for (let { name, cost, date } of injectionInfoAndAiDates) {
     const newPromise = new Promise((resolve, reject) => {
-      db.run(queries.INSERT_INJECTION_COST_AND_AI_DATE_SQL, [cowId, cost, date], (err) => {
+      db.run(queries.INSERT_INJECTION_INFO_AND_AI_DATES_SQL, [cowId, name, cost, date], (err) => {
         if (err) {
           reject(err);
         } else {
@@ -57,9 +57,9 @@ async function insertNewInjectionCostsAndAiDates(cowId, injectionCostsAndAiDates
 }
 
 
-async function getInjectionCostsAndAiDatesByCowId(cowId) {
+async function getInjectionInfoAndAiDatesByCowId(cowId) {
   return new Promise((resolve, reject) => {
-    db.all(queries.SELECT_INJECTION_COSTS_AND_AI_DATE_BY_COW_ID_SQL, cowId, (err, rows) => {
+    db.all(queries.SELECT_INJECTION_INFO_AND_AI_DATES_BY_COW_ID_SQL, cowId, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -70,9 +70,9 @@ async function getInjectionCostsAndAiDatesByCowId(cowId) {
 }
 
 
-async function getAllCows() {
-  return new Promise((resolve, reject) => {
-    db.all(queries.SELECT_ALL_COWS_WITH_INJECTION_COST_AND_AI_DATE_SQL, (err, rows) => {
+async function getAllCowsWithInjectionInfoAndAiDates() {
+  let cows = await new Promise((resolve, reject) => {
+    db.all(queries.SELECT_ALL_COWS__SQL, (err, rows) => {
       if (err) {
         reject(err);
       } else {
@@ -80,6 +80,39 @@ async function getAllCows() {
       }
     });
   });
+
+  const injectionInfoAndAiDates = await new Promise((resolve, reject) => {
+    db.all(queries.SELECT_ALL_INJECTION_INFO_AND_AI_DATES_SQL, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+
+  cows = cows.map(({id, user_id, cow_name, cow_breed, bull_name, date_and_time}) => {
+    const arrayOfInjectionInfoAndAiDates = [];
+    for (let {cow_id, name, cost, date} of injectionInfoAndAiDates) {
+      if (cow_id == id) {
+        arrayOfInjectionInfoAndAiDates.push({name, cost, date});
+      }
+    }
+
+    return {
+      id: id,
+      userId: user_id,
+      cowName: cow_name,
+      cowBreed: cow_breed,
+      bullName: bull_name,
+      injectionInfoAndAiDates : [
+        ...arrayOfInjectionInfoAndAiDates
+      ],
+      createdAt: date_and_time
+    };
+  });
+
+  return cows;
 }
 
 
@@ -92,7 +125,7 @@ async function deleteAllCows() {
         }
       });
 
-      db.run(queries.DELETE_ALL_INJECTION_COSTS_AND_AI_DATES_SQL, (err) => {
+      db.run(queries.DELETE_ALL_INJECTION_INFO_AND_AI_DATES_SQL, (err) => {
         if (err) {
           reject(err);
         } else {
@@ -104,8 +137,38 @@ async function deleteAllCows() {
 }
 
 
+
+async function getCowsWithInjectionInfoAndAiDatesByUserId(userId) {
+  const cows = await new Promise((resolve, reject) => {
+    db.all(queries.SELECT_ALL_COWS__SQL, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+
+  const cowsWithInjectionInfoAndAiDates = [];
+  for (let cow of cows) {
+    const injectionInfoAndAiDates = await getInjectionInfoAndAiDatesByCowId(cow.id);
+    cowsWithInjectionInfoAndAiDates.push({
+      id: cow.id,
+      cowName: cow.cow_name,
+      cowBreed: cow.cow_breed,
+      bullName: cow.bull_name,
+      injectionInfoAndAiDates: injectionInfoAndAiDates,
+      createdAt: cow.date_and_time
+    });
+  }
+
+  return cowsWithInjectionInfoAndAiDates;
+}
+
+
 module.exports = {
   addNewCow,
-  getAllCows,
+  getAllCowsWithInjectionInfoAndAiDates,
   deleteAllCows,
+  getCowsWithInjectionInfoAndAiDatesByUserId
 };

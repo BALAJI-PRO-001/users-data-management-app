@@ -28,7 +28,7 @@ db.serialize(() => {
     }
   });
 
-  db.run(queries.CREATE_INJECTION_COST_AND_AI_DATE_TABLE_SQL, (err) => {
+  db.run(queries.CREATE_INJECTION_INFO_AND_AI_DATES_TABLE_SQL, (err) => {
     if (err) {
       console.log("Error: " + err.message);
     }
