@@ -133,8 +133,77 @@ Response (Request Based)
 
         "recordCreatedAt": "2024-09-17 08:56:07"
       },
+      {}, {}, {} .... records
     ]
   }
 }
 ```
 
+**Route For fetch single record**
+### Usage
+``` base
+Request Information
+===================
+URL: /api/v1/records/<userId>
+METHOD: GET
+COOKIE: Admin cookie must 
+
+Response (Request Based)
+=========================
+{
+  success: true,
+  statusCode: 201,
+  message: "New reocrd created successfully"
+}
+```
+
+**Route for Get All Records**
+### Usage
+``` base
+Request Information
+===================
+URL: /api/v1/records/all
+METHOD: GET
+COOKIE: Admin cookie must 
+
+
+Response (Request Based)
+=========================
+{
+  success: true,
+  statusCode: 200,
+  data: {
+    records: {
+        user: {
+              id: <userId>,
+              name: <name>,
+              phoneNumber: <phoneNumber>,
+              address: <address>,
+              isCurrentUser: <state>,
+              createdAt: <dateAndTimeInDb>
+          },
+        cows: [
+            {
+              id: <cowId>,
+              cowName: <cowName>,
+              cowBreed: <cowBreed>,
+              bullName: <bullName>,
+              injectionInfoAndAiDates: [
+                {
+                  name: <injectionName>,
+                  cost: <injectionCost>,
+                  date: <aiDate>
+                },
+                {}, {}, {}, ...... injectionInfoAndAiDates
+                            
+              ],
+              createdAt: <dateAndTimeInDb>
+            },
+            {}, {}, {}, ..... cows
+        ],
+
+        "recordCreatedAt": "2024-09-17 08:56:07"
+    }
+  }
+}
+```
