@@ -3,13 +3,14 @@
 
 ## Routes
 - **Admin Routes**
-  - [Admin Login]()
+  - [Admin Login](#admin-login)
   - [Admin Logout]()
 
 - **Record Routes**
   - [Create new record]()
   - [Get all records]()
   - [Get single record]()
+  - [Delete all records]()
   - [Delete a record]()
   - [Add new cow to user]()
   - [Delete cow from user]()
@@ -18,9 +19,8 @@
   - [Update record]()
 
 
-## Admin Routes
+### Admin Login
 
-**Route for Handles client requests for admin loggin**
 ### Usage
 ``` base
 Request Information
