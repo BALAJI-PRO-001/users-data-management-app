@@ -166,10 +166,30 @@ async function downloadRecords(req, res, next) {
 
 
 async function updateRecord(req, res, next) {
+  const { userId } = req.params;
   try {
-    const { userId } = req.params;
-    // const updatedRecord = await Record.updateRecord(userId);
+    const { user, cows } = req.body;
+    const updatedRecord = await Record.updateRecord(userId, user, cows);
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      data: {
+        record: updatedRecord
+      }
+    });
   } catch(err) {
+    if (err.message.includes("SQLITE_CONSTRAINT: UNIQUE constraint failed: users.phone_number")) {
+      return next(errorHandler(409, "Duplicate Key (Phone Number)"));
+    }
+
+    if (err.message.includes("not found")) {
+      return next(errorHandler(404, `Record not found for the given user ID: ${userId}.`));
+    }
+
+    if (err.message.includes("Cannot update id")) {
+      return next(errorHandler(400, err.message));
+    }
+
     next(err);
   }
 }

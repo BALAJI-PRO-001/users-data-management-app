@@ -167,6 +167,22 @@ async function removeCowFormUser(userId, cowId) {
 
 
 
+async function updateRecord(userId, user, cows) {
+  if (user.id) {
+    return new Error("Cannot update user id.");
+  }
+
+  const userToUpdate = await User.getUserById(userId);
+  if (!userToUpdate) {
+    throw new Error(`User not found for the specified ID: ${userId}.`);
+  }
+
+  const updatedUser = await User.updateUser(userId, user);
+  return updatedUser;
+}
+
+
+
 async function saveRecordsToFile(path) {
   const records = await getAllRecords();
   
@@ -184,5 +200,6 @@ module.exports = {
   removeCowFormUser,
   saveRecordsToFile,
   addNewInjectionInfoAndAiDatesToCow,
-  removeInjectionInfoAndAiDatesFormCow
+  removeInjectionInfoAndAiDatesFormCow,
+  updateRecord
 }
