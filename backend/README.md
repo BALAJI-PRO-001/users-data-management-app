@@ -11,7 +11,7 @@
   - [Get all records](#get-all-records)
   - [Get single record](#get-single-record)
   - [Delete all records](#delete-all-records)
-  - [Delete a record](#delete-single-reocrd)
+  - [Delete single record](#delete-single-reocrd)
   - [Add new cow to user](#add-new-cow-to-user)
   - [Delete cow from user](#delete-cow-from-user)
   - [Add new injection info and ai dates to cow](#add-new-injection-info-and-ai-dates-to-cow)
