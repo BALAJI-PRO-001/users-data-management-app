@@ -1,5 +1,23 @@
 # BACKEND
 **Below API routes are available for clients to make requests to the backend and access the corresponding services.**
+
+## Routes
+- **Admin Routes**
+  - [Admin Login]()
+  - [Admin Logout]()
+
+- **Record Routes**
+  - [Create new record]()
+  - [Get all records]()
+  - [Get single record]()
+  - [Delete a record]()
+  - [Add new cow to user]()
+  - [Delete cow from user]()
+  - [Add new injection info and ai dates to cow]()
+  - [Delete injection info and ai dates form cow]()
+  - [Update record]()
+
+
 ## Admin Routes
 
 **Route for Handles client requests for admin loggin**
