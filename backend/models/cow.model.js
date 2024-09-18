@@ -68,6 +68,39 @@ async function addNewInjectionInfoAndAiDatesToCow(cowId, injectionInfoAndAiDates
 }
 
 
+
+async function removeInjectionInfoAndAiDatesById(id) {
+  validateId(id, "injection-info-and-ai-dates");
+
+  return new Promise((resolve, reject) => {
+    db.run(queries.DELETE_INJECTION_INFO_AND_AI_DATES_BY_ID_SQL, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+
+
+async function getInjectionInfoAndAiDatesById(id) {
+  validateId(id, "injection-info-and-ai-date");
+
+  return new Promise((resolve, reject) => {
+    db.get(queries.SELECT_INJECTION_INFO_AND_AI_DATES_BY_ID_SQL, id, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
+
+
 async function getInjectionInfoAndAiDatesByCowId(cowId) {
   validateId(cowId, "cow");
 
@@ -121,9 +154,14 @@ async function getAllCowsWithInjectionInfoAndAiDates() {
 
   cows = cows.map(({id, user_id, cow_name, cow_breed, bull_name, date_and_time}) => {
     const arrayOfInjectionInfoAndAiDates = [];
-    for (let {cow_id, name, cost, date} of injectionInfoAndAiDates) {
-      if (cow_id == id) {
-        arrayOfInjectionInfoAndAiDates.push({name, cost, date});
+    for (let injectInfoAndAiDates of injectionInfoAndAiDates) {
+      if (injectInfoAndAiDates.cow_id == id) {
+        arrayOfInjectionInfoAndAiDates.push({
+          id: injectInfoAndAiDates.id,
+          name: injectInfoAndAiDates.name,
+          cost: injectInfoAndAiDates.cost,
+          date: injectInfoAndAiDates.date
+        });
       }
     }
 
@@ -219,5 +257,7 @@ module.exports = {
   deleteAllCows,
   deleteCow,
   getCowsWithInjectionInfoAndAiDatesByUserId,
-  addNewInjectionInfoAndAiDatesToCow
+  addNewInjectionInfoAndAiDatesToCow,
+  removeInjectionInfoAndAiDatesById,
+  getInjectionInfoAndAiDatesById
 };

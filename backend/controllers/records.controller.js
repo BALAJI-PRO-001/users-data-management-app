@@ -50,7 +50,7 @@ async function getRecord(req, res, next) {
       }
     });
   } catch(err) {
-    if (err.message.includes("User not found for the specified ID")) {
+    if (err.message.includes("not found")) {
       return next(errorHandler(404, `Record not found for the given user ID: ${userId}.`));
     }
     next(err);
@@ -66,7 +66,7 @@ async function addNewCowRecordToUser(req, res, next) {
     res.status(201).json({
       success: true,
       statusCode: 201,
-      message: `New injection info and AI dates were successfully created for Cow ID: ${cowId}.`
+      message: `A new cow record successfully created for user ID: ${userId}.`
     });
   } catch(err) {
     if (err.message.includes("User not found for the specified ID")) {
@@ -88,6 +88,23 @@ async function addNewInjectionInfoAndAiDatesToCow(req, res, next) {
       message: `New injection info and AI dates have been successfully created for Cow ID: ${cowId}.`
     });
   } catch(err) {
+    if (err.message.includes("not found")) {
+      return next(errorHandler(404, err.message));
+    }
+    next(err);
+  }
+}
+
+
+async function removeInjectionInfoAndAiDatesFormCow(req, res, next) {
+  try {
+    const { userId, cowId, id } = req.params;
+    await Record.removeInjectionInfoAndAiDatesFormCow(userId, cowId, id);
+    res.status(204).json({});
+  } catch(err) {
+    if (err.message.includes("not found")) {
+      return next(errorHandler(404, err.message));
+    }
     next(err);
   }
 }
@@ -109,6 +126,9 @@ async function removeCowFormUser(req, res, next) {
     await Record.removeCowFormUser(userId, cowId);
     return res.status(204).json({});
   } catch(err) {
+    if (err.message.includes("not found")) {
+      return next(errorHandler(404, err.message));
+    }
     next(err);
   }
 }
@@ -129,6 +149,7 @@ module.exports = {
   deleteAllRecords,
   addNewCowRecordToUser,
   addNewInjectionInfoAndAiDatesToCow,
+  removeInjectionInfoAndAiDatesFormCow,
   downloadRecords,
   removeCowFormUser
 };

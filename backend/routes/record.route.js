@@ -9,16 +9,22 @@ const {
   deleteAllRecords,
   downloadRecords,
   removeCowFormUser,
-  addNewInjectionInfoAndAiDatesToCow
+  addNewInjectionInfoAndAiDatesToCow,
+  removeInjectionInfoAndAiDatesFormCow
 } = require("../controllers/records.controller");
 
-router.post("/records",verifyAdminAuthenticationToken, createNewRecord)
-      .get("/records/all", verifyAdminAuthenticationToken, getAllRecords)
+
+router.get("/records/all", verifyAdminAuthenticationToken, getAllRecords)
       .get("/records/:userId", verifyAdminAuthenticationToken, getRecord)
-      .delete("/records/all", verifyAdminAuthenticationToken, deleteAllRecords)
-      .post("/records/:userId/cows",verifyAdminAuthenticationToken, addNewCowRecordToUser)
-      .delete("/records/:userId/cows/:cowId", verifyAdminAuthenticationToken, removeCowFormUser)
-      .post("/records/:userId/cows/:cowId/inject-info-ai-dates", verifyAdminAuthenticationToken, addNewInjectionInfoAndAiDatesToCow)
       .get("/records/download", verifyAdminAuthenticationToken, downloadRecords);
+
+router.post("/records", verifyAdminAuthenticationToken, createNewRecord)
+      .post("/records/:userId/cows",verifyAdminAuthenticationToken, addNewCowRecordToUser)
+      .post("/records/:userId/cows/:cowId/inject-info-ai-dates", verifyAdminAuthenticationToken, addNewInjectionInfoAndAiDatesToCow);
+
+      
+router.delete("/records/all", verifyAdminAuthenticationToken, deleteAllRecords)
+      .delete("/records/:userId/cows/:cowId", verifyAdminAuthenticationToken, removeCowFormUser)
+      .delete("/records/:userId/cows/:cowId/inject-info-ai-dates/:id", verifyAdminAuthenticationToken, removeInjectionInfoAndAiDatesFormCow);
 
 module.exports = router;
