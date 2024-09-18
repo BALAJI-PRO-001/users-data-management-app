@@ -16,6 +16,7 @@
   - [Delete cow from user](#delete-cow-from-user)
   - [Add new injection info and ai dates to cow](#add-new-injection-info-and-ai-dates-to-cow)
   - [Delete injection info and ai dates from cow](#delete-injection-info-and-ai-dates-from-cow)
+  - [Update Record](#update-record)
 
 
 ## Admin Login
@@ -244,6 +245,7 @@ Request Information
 URL: /api/v1/records/<userId>/cows
 METHOD: POST
 COOKIE: Admin cookie must 
+CONTENT-TYPE: application/json
 BODY: {
   cowName: <string>,
   cowBreed: <string>,
@@ -289,6 +291,7 @@ Request Information
 URL: /api/v1/records/<userId>/cows/<cowId>/inject-info-ai-dates
 METHOD: POST
 COOKIE: Admin cookie must 
+CONTENT-TYPE: application/json
 BODY: {
   name: <string>,
   cost: <number>,
@@ -316,4 +319,41 @@ COOKIE: Admin cookie must
 Response (Request Based)
 =========================
 statusCode: 204  body: empty
+```
+
+
+## Update Record (Pending)
+**Api usage and request response details**
+``` base
+Request Information
+===================
+URL: /api/v1/records/<userId>
+METHOD: PATCH
+COOKIE: Admin cookie must 
+CONTENT-TYPE: application/json
+BODY: {
+  user: {
+    <key>: <value>
+    ....
+  },
+  cows: [
+   
+  ]
+}
+
+
+Response (Request Based)
+=========================
+{
+  success: true,
+  statusCode: 200,
+  data: {
+    user: {
+      ....updated key and values
+    },
+    cows: [
+      {}
+    ]
+  }
+}
 ```
