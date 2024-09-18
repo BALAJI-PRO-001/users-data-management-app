@@ -1,15 +1,15 @@
 # BACKEND
 **Below API routes are available for clients to make requests to the backend and access the corresponding services.**
 
-## Routes
+## API Routes
 - **Admin Routes**
   - [Admin Login](#admin-login)
-  - [Admin Logout]()
+  - [Admin Logout](#admin-logout)
 
 - **Record Routes**
-  - [Create new record]()
-  - [Get all records]()
-  - [Get single record]()
+  - [Create new record](#create-new-record)
+  - [Get all records](#get-all-records)
+  - [Get single record](#get-single-record)
   - [Delete all records]()
   - [Delete a record]()
   - [Add new cow to user]()
@@ -19,9 +19,8 @@
   - [Update record]()
 
 
-### Admin Login
-
-### Usage
+## Admin Login
+**Api usage and request response details**
 ``` base
 Request Information
 ===================
@@ -43,8 +42,8 @@ Response (Request Based)
 }
 ```
 
-**Router for Handles client requests for admin logout**
-### Usage
+## Admin Logout
+**Api usage and request response details**
 ``` base
 Request Information
 ===================
@@ -60,9 +59,8 @@ Response (Request Based)
 }
 ```
 
-## Records Routes
-**Route for Create new record**
-### Usage
+## Create New Record
+**Api usage and request response details**
 ``` base
 Request Information
 ===================
@@ -103,8 +101,8 @@ Response (Request Based)
 }
 ```
 
-**Route for Get All Records**
-### Usage
+## Get All Records 
+**Api usage and request response details**
 ``` base
 Request Information
 ===================
@@ -157,8 +155,8 @@ Response (Request Based)
 }
 ```
 
-**Route For fetch single record**
-### Usage
+## Get Single Record
+**Api usage and request response details**
 ``` base
 Request Information
 ===================
