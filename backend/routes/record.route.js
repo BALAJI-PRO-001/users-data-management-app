@@ -10,7 +10,9 @@ const {
   downloadRecords,
   removeCowFormUser,
   addNewInjectionInfoAndAiDatesToCow,
-  removeInjectionInfoAndAiDatesFormCow
+  removeInjectionInfoAndAiDatesFormCow,
+  updateRecord,
+  deleteRecord
 } = require("../controllers/records.controller");
 
 
@@ -22,8 +24,10 @@ router.post("/records", verifyAdminAuthenticationToken, createNewRecord)
       .post("/records/:userId/cows",verifyAdminAuthenticationToken, addNewCowRecordToUser)
       .post("/records/:userId/cows/:cowId/inject-info-ai-dates", verifyAdminAuthenticationToken, addNewInjectionInfoAndAiDatesToCow);
 
+router.patch("/records/:userId", verifyAdminAuthenticationToken, updateRecord);
       
 router.delete("/records/all", verifyAdminAuthenticationToken, deleteAllRecords)
+      .delete("/records/:userId", verifyAdminAuthenticationToken, deleteRecord)
       .delete("/records/:userId/cows/:cowId", verifyAdminAuthenticationToken, removeCowFormUser)
       .delete("/records/:userId/cows/:cowId/inject-info-ai-dates/:id", verifyAdminAuthenticationToken, removeInjectionInfoAndAiDatesFormCow);
 

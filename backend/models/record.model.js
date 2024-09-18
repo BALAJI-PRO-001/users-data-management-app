@@ -2,6 +2,7 @@ const User = require("./user.model");
 const Cow = require("./cow.model");
 
 
+
 async function createNewRecord(user, cows) {
   const newUser = await User.addNewUser(user.name, user.phoneNumber, user.address);
   const newCows = [];
@@ -25,6 +26,7 @@ async function createNewRecord(user, cows) {
     recordCreatedAt: newUser.date_and_time
   };  
 }
+
 
 
 async function getAllRecords() {
@@ -57,6 +59,7 @@ async function getAllRecords() {
 }
 
 
+
 async function getRecordByUserId(id) {
   const user = await User.getUserById(id);
   if (!user) {
@@ -78,10 +81,27 @@ async function getRecordByUserId(id) {
 }
 
 
+
 async function deleteAllRecords() {
   await User.deleteAllUsers();
   await Cow.deleteAllCows();
 }
+
+
+
+async function deleteRecord(userId) {
+  const user = await User.getUserById(userId);
+  if (!user) {
+    throw new Error(`User not found for the specified ID: ${userId}.`);
+  }
+  
+  await User.deleteUser(userId);
+  const cows = await Cow.getCowsWithInjectionInfoAndAiDatesByUserId(userId);
+  for (let cow of cows) {
+    await Cow.deleteCow(cow.id);
+  }
+}
+
 
 
 async function addNewCowRecordToUser(userId, cowName, cowBreed, bullName, injectionCostsAndAiDates) {
@@ -91,6 +111,7 @@ async function addNewCowRecordToUser(userId, cowName, cowBreed, bullName, inject
     }
     return await Cow.addNewCow(userId, cowName, cowBreed, bullName, injectionCostsAndAiDates);
 }
+
 
 
 async function addNewInjectionInfoAndAiDatesToCow(userId, cowId, name, cost, date) {
@@ -106,6 +127,7 @@ async function addNewInjectionInfoAndAiDatesToCow(userId, cowId, name, cost, dat
 
   await Cow.addNewInjectionInfoAndAiDatesToCow(cowId, [{name, cost, date}]);
 }
+
 
 
 async function removeInjectionInfoAndAiDatesFormCow(userId, cowId, id) {
@@ -128,6 +150,7 @@ async function removeInjectionInfoAndAiDatesFormCow(userId, cowId, id) {
 }
 
 
+
 async function removeCowFormUser(userId, cowId) {
   const user = await User.getUserById(userId);
   if (!user) {
@@ -143,10 +166,12 @@ async function removeCowFormUser(userId, cowId) {
 }
 
 
+
 async function saveRecordsToFile(path) {
   const records = await getAllRecords();
   
 }
+
 
 
 module.exports = {
@@ -155,6 +180,7 @@ module.exports = {
   getAllRecords,
   getRecordByUserId,
   deleteAllRecords,
+  deleteRecord,
   removeCowFormUser,
   saveRecordsToFile,
   addNewInjectionInfoAndAiDatesToCow,

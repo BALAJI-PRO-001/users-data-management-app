@@ -73,7 +73,7 @@ async function removeInjectionInfoAndAiDatesById(id) {
   validateId(id, "injection-info-and-ai-dates");
 
   return new Promise((resolve, reject) => {
-    db.run(queries.DELETE_INJECTION_INFO_AND_AI_DATES_BY_ID_SQL, (err) => {
+    db.run(queries.DELETE_INJECTION_INFO_AND_AI_DATES_BY_ID_SQL, id, (err) => {
       if (err) {
         reject(err);
       } else {
@@ -116,6 +116,7 @@ async function getInjectionInfoAndAiDatesByCowId(cowId) {
 }
 
 
+
 async function getCowById(id) {
   validateId(id, "cow");
 
@@ -129,6 +130,7 @@ async function getCowById(id) {
     });
   });
 }
+
 
 
 async function getAllCowsWithInjectionInfoAndAiDates() {
@@ -182,6 +184,7 @@ async function getAllCowsWithInjectionInfoAndAiDates() {
 }
 
 
+
 async function deleteAllCows() {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
@@ -203,19 +206,30 @@ async function deleteAllCows() {
 }
 
 
+
 async function deleteCow(id) {
   validateId(id, "cow");
 
   return new Promise((resolve, reject) => {
-    db.run(queries.DELETE_COW_BY_ID_SQL, id, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
+    db.serialize(() => {
+      db.run(queries.DELETE_COW_BY_ID_SQL, id, (err) => {
+        if (err) {
+          reject(err);
+        }
+      });
+
+      db.run(queries.DELETE_INJECTION_INFO_AND_AI_DATES_BY_COW_ID_SQL, id, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
     });
   });
 }
+
+
 
 
 async function getCowsWithInjectionInfoAndAiDatesByUserId(userId) {
@@ -259,5 +273,5 @@ module.exports = {
   getCowsWithInjectionInfoAndAiDatesByUserId,
   addNewInjectionInfoAndAiDatesToCow,
   removeInjectionInfoAndAiDatesById,
-  getInjectionInfoAndAiDatesById
+  getInjectionInfoAndAiDatesById,
 };

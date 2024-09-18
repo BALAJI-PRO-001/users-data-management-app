@@ -58,6 +58,7 @@ async function getRecord(req, res, next) {
 }
 
 
+
 async function addNewCowRecordToUser(req, res, next) {
   try {
     const userId = req.params.userId;
@@ -75,6 +76,7 @@ async function addNewCowRecordToUser(req, res, next) {
     next(err);
   }
 }
+
 
 
 async function addNewInjectionInfoAndAiDatesToCow(req, res, next) {
@@ -96,6 +98,7 @@ async function addNewInjectionInfoAndAiDatesToCow(req, res, next) {
 }
 
 
+
 async function removeInjectionInfoAndAiDatesFormCow(req, res, next) {
   try {
     const { userId, cowId, id } = req.params;
@@ -110,6 +113,7 @@ async function removeInjectionInfoAndAiDatesFormCow(req, res, next) {
 }
 
 
+
 async function deleteAllRecords(req, res, next) {
   try {
     await Record.deleteAllRecords();
@@ -118,6 +122,22 @@ async function deleteAllRecords(req, res, next) {
     next(err);
   }
 }
+
+
+
+async function deleteRecord(req, res, next) {
+  const { userId } = req.params;
+  try {
+    await Record.deleteRecord(userId);
+    res.status(204).json({});
+  } catch(err) {
+    if (err.message.includes("not found")) {
+      return next(errorHandler(404, `Record not found for the given user ID: ${userId}.`));
+    }
+    next(err);
+  }
+}
+
 
 
 async function removeCowFormUser(req, res, next) {
@@ -134,6 +154,7 @@ async function removeCowFormUser(req, res, next) {
 }
 
 
+
 async function downloadRecords(req, res, next) {
   try {
     await Record.saveRecordsToFile();
@@ -141,6 +162,19 @@ async function downloadRecords(req, res, next) {
     next(err);
   }
 }
+
+
+
+async function updateRecord(req, res, next) {
+  try {
+    const { userId } = req.params;
+    // const updatedRecord = await Record.updateRecord(userId);
+  } catch(err) {
+    next(err);
+  }
+}
+
+
 
 module.exports = {
   createNewRecord,
@@ -151,5 +185,7 @@ module.exports = {
   addNewInjectionInfoAndAiDatesToCow,
   removeInjectionInfoAndAiDatesFormCow,
   downloadRecords,
-  removeCowFormUser
+  removeCowFormUser, 
+  updateRecord,
+  deleteRecord
 };
