@@ -231,7 +231,6 @@ async function deleteCow(id) {
 
 
 
-
 async function getCowsWithInjectionInfoAndAiDatesByUserId(userId) {
   validateId(userId, "user");
 
@@ -260,7 +259,6 @@ async function getCowsWithInjectionInfoAndAiDatesByUserId(userId) {
 
   return cowsWithInjectionInfoAndAiDates;
 }
-
 
 
 

@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const verifyAdminAuthenticationToken = require("../utils/verifyAdminAuthenticationToken");
 const { 
   createNewRecord,
   addNewCowRecordToUser,
@@ -16,19 +15,19 @@ const {
 } = require("../controllers/records.controller");
 
 
-router.get("/records/all", verifyAdminAuthenticationToken, getAllRecords)
-      .get("/records/:userId", verifyAdminAuthenticationToken, getRecord)
-      .get("/records/download", verifyAdminAuthenticationToken, downloadRecords);
+router.get("/records/all", getAllRecords)
+      .get("/records/:userId", getRecord)
+      .get("/records/download", downloadRecords);
 
-router.post("/records", verifyAdminAuthenticationToken, createNewRecord)
-      .post("/records/:userId/cows",verifyAdminAuthenticationToken, addNewCowRecordToUser)
-      .post("/records/:userId/cows/:cowId/inject-info-ai-dates", verifyAdminAuthenticationToken, addNewInjectionInfoAndAiDatesToCow);
+router.post("/records", createNewRecord)
+      .post("/records/:userId/cows", addNewCowRecordToUser)
+      .post("/records/:userId/cows/:cowId/inject-info-ai-dates", addNewInjectionInfoAndAiDatesToCow);
 
-router.patch("/records/:userId", verifyAdminAuthenticationToken, updateRecord);
+router.patch("/records/:userId", updateRecord);
       
-router.delete("/records/all", verifyAdminAuthenticationToken, deleteAllRecords)
-      .delete("/records/:userId", verifyAdminAuthenticationToken, deleteRecord)
-      .delete("/records/:userId/cows/:cowId", verifyAdminAuthenticationToken, removeCowFormUser)
-      .delete("/records/:userId/cows/:cowId/inject-info-ai-dates/:id", verifyAdminAuthenticationToken, removeInjectionInfoAndAiDatesFormCow);
+router.delete("/records/all", deleteAllRecords)
+      .delete("/records/:userId", deleteRecord)
+      .delete("/records/:userId/cows/:cowId", removeCowFormUser)
+      .delete("/records/:userId/cows/:cowId/inject-info-ai-dates/:id", removeInjectionInfoAndAiDatesFormCow);
 
 module.exports = router;
